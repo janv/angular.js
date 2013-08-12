@@ -692,6 +692,17 @@ describe('Scope', function() {
       expect($rootScope.log).toBe('12');
     }));
 
+    it('should run async expressions in their proper context', inject(function ($rootScope) {
+      var child = $rootScope.$new();
+      $rootScope.ctx = 'root context';
+      $rootScope.log = '';
+      child.ctx = 'child context';
+      child.log = '';
+      child.$evalAsync('log=ctx');
+      $rootScope.$digest();
+      expect($rootScope.log).toBe('');
+      expect(child.log).toBe('child context');
+    }));
 
     it('should operate only with a single queue across all child and isolate scopes', inject(function($rootScope) {
       var childScope = $rootScope.$new();
